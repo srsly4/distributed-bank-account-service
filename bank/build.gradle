@@ -1,0 +1,55 @@
+plugins {
+    id 'com.zeroc.gradle.ice-builder.slice' version '1.4.5' apply false
+}
+
+group 'pl.edu.ds'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'application'
+
+mainClassName = "pl.agh.ds.Main"
+sourceCompatibility = 1.8
+
+apply plugin: 'com.zeroc.gradle.ice-builder.slice'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    // https://mvnrepository.com/artifact/io.grpc/grpc-all
+    compile group: 'io.grpc', name: 'grpc-all', version: '1.11.0'
+    compile 'com.zeroc:ice:3.7.1'
+}
+
+slice {
+    java {
+        files = [file("../protos/bank_account/bank_account.ice")]
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/java', 'build/generated-src']
+        }
+        resources {
+            srcDirs = ['src/resources']
+        }
+    }
+}
+
+run {
+    standardInput = System.in
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'pl.agh.ds.Main'
+    }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
