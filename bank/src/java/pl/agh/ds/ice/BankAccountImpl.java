@@ -8,8 +8,8 @@ import BankAccountServices.UnauthorizedError;
 import com.zeroc.Ice.Current;
 
 public class BankAccountImpl implements BankAccount {
-    private final BankAccountDetails details;
-    private final BankAccountState state;
+    protected final BankAccountDetails details;
+    protected BankAccountState state;
 
     public BankAccountImpl(String guid, String name, String surname, String pesel, Float monthlyIncome) {
         details = new BankAccountDetails(name, surname, pesel, guid, monthlyIncome);

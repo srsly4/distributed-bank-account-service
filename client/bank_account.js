@@ -52,6 +52,40 @@
         }
     };
 
+    BankAccountServices.InvalidArgumentError = class extends Ice.UserException
+    {
+        constructor(message = "", _cause = "")
+        {
+            super(_cause);
+            this.message = message;
+        }
+
+        static get _parent()
+        {
+            return Ice.UserException;
+        }
+
+        static get _id()
+        {
+            return "::BankAccountServices::InvalidArgumentError";
+        }
+
+        _mostDerivedType()
+        {
+            return BankAccountServices.InvalidArgumentError;
+        }
+
+        _writeMemberImpl(ostr)
+        {
+            ostr.writeString(this.message);
+        }
+
+        _readMemberImpl(istr)
+        {
+            this.message = istr.readString();
+        }
+    };
+
     BankAccountServices.AccountAlreadyExistsError = class extends Ice.UserException
     {
         constructor(_cause = "")
@@ -142,30 +176,33 @@
 
     BankAccountServices.LoanRequest = class
     {
-        constructor(targetCurrency = "", months = 0, amount = 0.0)
+        constructor(targetCurrency = "", startTime = 0, endTime = 0, amount = 0.0)
         {
             this.targetCurrency = targetCurrency;
-            this.months = months;
+            this.startTime = startTime;
+            this.endTime = endTime;
             this.amount = amount;
         }
 
         _write(ostr)
         {
             ostr.writeString(this.targetCurrency);
-            ostr.writeInt(this.months);
+            ostr.writeInt(this.startTime);
+            ostr.writeInt(this.endTime);
             ostr.writeFloat(this.amount);
         }
 
         _read(istr)
         {
             this.targetCurrency = istr.readString();
-            this.months = istr.readInt();
+            this.startTime = istr.readInt();
+            this.endTime = istr.readInt();
             this.amount = istr.readFloat();
         }
 
         static get minWireSize()
         {
-            return  9;
+            return  13;
         }
     };
 
@@ -256,6 +293,7 @@
     {
         "requestLoan": [, , , , [BankAccountServices.LoanProposal], [[BankAccountServices.LoanRequest], [7]], ,
         [
+            BankAccountServices.InvalidArgumentError,
             BankAccountServices.UnauthorizedError
         ], , ]
     });
@@ -277,7 +315,8 @@
     {
         "createAccount": [, , , , ["BankAccountServices.BankAccountPrx"], [[7], [7], [7], [5]], [[7]],
         [
-            BankAccountServices.AccountAlreadyExistsError
+            BankAccountServices.AccountAlreadyExistsError,
+            BankAccountServices.InvalidArgumentError
         ], , ]
     });
     exports.BankAccountServices = BankAccountServices;

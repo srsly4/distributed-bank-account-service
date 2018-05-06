@@ -24,7 +24,7 @@ public class BankAccountFactoryImpl implements BankAccountFactory {
             bankAccount = new BankAccountImpl(uuid.toString(), name, surname, pesel, monthlyIncome);
             identity = new Identity(pesel, "standard");
         } else {
-            bankAccount = null;
+            bankAccount = new PremiumBankAccountImpl(uuid.toString(), name, surname, pesel, monthlyIncome);
             identity = new Identity(pesel, "premium");
         }
         try {

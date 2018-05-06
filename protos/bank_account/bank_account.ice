@@ -4,6 +4,9 @@ module BankAccountServices {
     enum BankAccountType { Standard, Premium }
     
     exception UnauthorizedError {}
+    exception InvalidArgumentError {
+        string message;
+    }
     exception AccountAlreadyExistsError {}
     
     struct BankAccountState {
@@ -21,7 +24,8 @@ module BankAccountServices {
     
     struct LoanRequest {
         string targetCurrency;
-        int months;
+        int startTime;
+        int endTime;
         float amount;
     }
     
@@ -37,10 +41,10 @@ module BankAccountServices {
     }
     
     interface PremiumBankAccount extends BankAccount {
-        LoanProposal requestLoan(LoanRequest request, string guid) throws UnauthorizedError;
+        LoanProposal requestLoan(LoanRequest request, string guid) throws UnauthorizedError, InvalidArgumentError;
     }
     
     interface BankAccountFactory {
-        BankAccount* createAccount(string name, string surname, string pesel, float monthlyIncome, out string guid) throws AccountAlreadyExistsError;
+        BankAccount* createAccount(string name, string surname, string pesel, float monthlyIncome, out string guid) throws AccountAlreadyExistsError, InvalidArgumentError;
     }
 }
